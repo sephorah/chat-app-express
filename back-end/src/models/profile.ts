@@ -4,11 +4,6 @@ import prisma from "../client";
 import { getUser } from "./user";
 
 const createProfile = async (data: Omit<Profile, "id">): Promise<Profile> => {
-    const retrievedUser = await getUser(data.userId);
-
-    if (!retrievedUser) {
-        return null;
-    }
     return await prisma.profile.create({ data: { id: randomUUID(), ...data }});
 }
 

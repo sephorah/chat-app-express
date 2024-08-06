@@ -20,13 +20,6 @@ describe("Profile model tests", () => {
         });
     });
 
-    test("Create a new profile linked to an non-existing user", async () => {
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: "tata" });
-
-        expect(profile).toBe(null);
-    });
-
-
     test("Get a specific profile", async () => {
         const user = await createUser({ username: "test_Seph", password: "test" });
         const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
