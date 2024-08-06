@@ -1,0 +1,7 @@
+{
+    "transform": {
+        "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": ["**/tests/**/*.tests.ts"],
+    "moduleFileExtensions": ["ts", "js"]
+}

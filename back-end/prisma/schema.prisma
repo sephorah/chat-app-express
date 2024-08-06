@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id  Int   @id @default(autoincrement())
+  id  String   @id @unique
   username  String   @db.VarChar(50)
   password  String
   createdAt DateTime  @default(now())
@@ -22,18 +22,18 @@ model User {
 }
 
 model Profile {
-  id  Int   @id @default(autoincrement())
+  id  String   @id @unique
   name String @db.VarChar(50)
   bio String  @db.VarChar(200)
   chatrooms Chatroom[]
   messages Message[]
 
-  userId Int @unique
+  userId String @unique
   user User @relation(fields: [userId], references: [id])
 }
 
 model Chatroom {
-  id  Int   @id @default(autoincrement())
+  id  String   @id @unique
   name  String  @db.VarChar(50)
   createdAt DateTime  @default(now())
   members Profile[]
@@ -41,13 +41,13 @@ model Chatroom {
 }
 
 model Message {
-  id  Int   @id @default(autoincrement())
+  id  String   @id @unique
   createdAt DateTime  @default(now())
   body String @db.Text
   read Boolean @default(false)
 
-  senderId Int
+  senderId String
   profile Profile @relation(fields: [senderId], references: [id])
-  chatroomId Int
+  chatroomId String
   chatroom Chatroom @relation(fields: [chatroomId], references: [id])
 }
