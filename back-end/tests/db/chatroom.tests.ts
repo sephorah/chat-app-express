@@ -1,5 +1,5 @@
-import prisma from "../src/client";
-import { createChatroom, getChatrooms, getChatroom, updateChatroom, deleteChatroom } from "../src/models/chatroom";
+import prisma from "../../src/client";
+import { createChatroom, getChatrooms, getChatroom, updateChatroom, deleteChatroom } from "../../src/models/chatroom";
 
 afterEach(async () => {
     await prisma.chatroom.deleteMany({ where: { name: { startsWith: "test_chatroom_" } } })

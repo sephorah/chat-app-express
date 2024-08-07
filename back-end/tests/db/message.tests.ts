@@ -1,8 +1,8 @@
-import prisma from "../src/client";
-import { createChatroom } from "../src/models/chatroom";
-import { createMessage, getMessages, getMessagesFromChatroom, getMessage, updateMessage, deleteMessage } from "../src/models/message";
-import { createProfile } from "../src/models/profile";
-import { createUser } from "../src/models/user";
+import prisma from "../../src/client";
+import { createChatroom } from "../../src/models/chatroom";
+import { createMessage, getMessages, getMessagesFromChatroom, getMessage, updateMessage, deleteMessage } from "../../src/models/message";
+import { createProfile } from "../../src/models/profile";
+import { createUser } from "../../src/models/user";
 
 afterEach(async () => {
     await prisma.profile.deleteMany({ where: { name: { startsWith: "test_message_" } } });
