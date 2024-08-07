@@ -14,18 +14,58 @@ describe("Test auth routes", () => {
         };
         const response = await request(app).post("/signup").send(payload)
         .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
+        .set('Accept', 'application/json');
 
         expect(response.status).toBe(StatusCodes.CREATED);
         expect(response.body.accessToken).toBeDefined();
     });
+
+    test("Login with an existing user", async () => {
+        const payload = { "username": "test_register_Seph", "password": "password1",
+            "confirmPassword": "password1"
+        };
+        await request(app).post("/signup").send(payload)
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json');
+        const body = { "username": "test_register_Seph", "password": "password1" };
+        const response = await request(app).post("/login").send(body)
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json');
+
+        expect(response.status).toBe(StatusCodes.OK);
+        expect(response.body.accessToken).toBeDefined();
+    });
+
+    test("Login with a wrong password", async () => {
+        const payload = { "username": "test_register_Seph", "password": "password1",
+            "confirmPassword": "password1"
+        };
+        await request(app).post("/signup").send(payload)
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json');
+        const body = { "username": "test_register_Seph", "password": "password2" };
+        const response = await request(app).post("/login").send(body)
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json');
+
+        expect(response.status).toBe(StatusCodes.FORBIDDEN);
+        expect(response.body.accessToken).toBeUndefined();
+    });
+
+    test("Login with a wrong username", async () => {
+        const payload = { "username": "test_register_Seph", "password": "password1",
+            "confirmPassword": "password1"
+        };
+        await request(app).post("/signup").send(payload)
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json');
+        const body = { "username": "test_register_Seph1", "password": "password1" };
+        const response = await request(app).post("/login").send(body)
+        .set('Content-Type', 'application/json')
+        .set('Accept', 'application/json');
+
+        expect(response.status).toBe(StatusCodes.NOT_FOUND);
+        expect(response.body.accessToken).toBeUndefined();
+    });
 })
 
-// const request = require('supertest');
-// const app = require('./app');
-
-// test('returns a list of users', async () => {
-//     const response = await request(app).get('/users');
-//     expect(response.status).toBe(200);
-//     expect(response.body).toEqual([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }, { id: 3, name: 'Charlie' },]);
-// });

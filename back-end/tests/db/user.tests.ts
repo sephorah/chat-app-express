@@ -1,5 +1,5 @@
 import prisma from "../../src/client";
-import { createUser, getUser, getUsers, updateUser, deleteUser } from "../../src/models/user";
+import { createUser, getUser, getUsers, updateUser, deleteUser, getUserByUsername } from "../../src/models/user";
 
 afterEach(async () => {
     await prisma.user.deleteMany({ where: { username: { startsWith: "test_user_" } } });
@@ -20,6 +20,18 @@ describe("User model tests", () => {
     test("Get a specific user", async () => {
         const user = await createUser({ username: "test_user_Seph", password: "test" });
         const retrievedUser = await getUser(user.id)
+
+        expect(retrievedUser).toStrictEqual({
+            id: user.id,
+            username: "test_user_Seph",
+            password: user.password,
+            createdAt: user.createdAt
+        })
+    });
+
+    test("Get a specific user by username", async () => {
+        const user = await createUser({ username: "test_user_Seph", password: "test" });
+        const retrievedUser = await getUserByUsername(user.username);
 
         expect(retrievedUser).toStrictEqual({
             id: user.id,
