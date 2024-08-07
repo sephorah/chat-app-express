@@ -2,8 +2,8 @@ import zod from "zod";
 
 const registerSchema = zod.object({
     username: zod.string()
-        .min(2, { message: "Username must be 2-40 characters." })
-        .max(40, { message: "Username must be 2-40 characters." }),
+        .min(2, { message: "Username must be 2-30 characters." })
+        .max(30, { message: "Username must be 2-30 characters." }),
     password: zod.string()
         .min(8, { message: "Password must be 8-12 characters." })
         .max(12, { message: "Password must be 8-12 characters." }),

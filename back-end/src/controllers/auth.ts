@@ -1,8 +1,8 @@
 import { User } from "@prisma/client";
 import { Request, Response } from "express";
-import { hashSync } from "bcryptjs";
+import { compareSync, hashSync } from "bcryptjs";
 import { saltRounds, secretJwt } from "../config";
-import { createUser } from "../models/user";
+import { createUser, getUserByUsername } from "../models/user";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 
@@ -29,4 +29,24 @@ const register = async (req: Request, res: Response) => {
     res.status(StatusCodes.CREATED).send(response);
 }
 
-export { register };
+const login = async (req: Request, res: Response) => {
+    const { username, password } = req.body;
+    const retrievedUser = await getUserByUsername(username);
+
+    if (!retrievedUser) {
+        res.status(StatusCodes.NOT_FOUND).send("User not found");
+        return;
+    }
+    const matchPassword = compareSync(password, retrievedUser.password);
+    if (!matchPassword) {
+        res.status(StatusCodes.FORBIDDEN).send("Wrong password");
+        return;
+    }
+    const accessToken = jwt.sign({ username: username }, secretJwt);
+    const response = {
+        accessToken: accessToken
+    }
+    res.status(StatusCodes.OK).send(response);
+}
+
+export { register, login };

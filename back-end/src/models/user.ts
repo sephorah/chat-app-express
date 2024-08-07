@@ -18,6 +18,14 @@ const getUser = async (id: string): Promise<User> => {
     });
 }
 
+const getUserByUsername = async (username: string): Promise<User> => {
+    return await prisma.user.findUnique({
+        where: {
+            username: username
+        },
+    });
+}
+
 const updateUser = async (id: string, data: Partial<User>): Promise<User> => {
     return await prisma.user.update({
         where: {
@@ -35,4 +43,4 @@ const deleteUser = async (id: string): Promise<User> => {
     });
 }
 
-export { createUser, getUser, updateUser, deleteUser, getUsers };
+export { createUser, getUser, getUserByUsername, updateUser, deleteUser, getUsers };
