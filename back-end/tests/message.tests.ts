@@ -4,24 +4,24 @@ import { createMessage, getMessages, getMessagesFromChatroom, getMessage, update
 import { createProfile } from "../src/models/profile";
 import { createUser } from "../src/models/user";
 
-afterEach(() => {
-    prisma.user.deleteMany({ where: { username: { startsWith: "test_" } } });
-    prisma.profile.deleteMany({ where: { name: { startsWith: "test_" } } });
-    prisma.chatroom.deleteMany({ where: { name: { startsWith: "test_" } } });
-    prisma.message.deleteMany({ where: { body: { startsWith: "test_" } } });
+afterEach(async () => {
+    await prisma.profile.deleteMany({ where: { name: { startsWith: "test_message_" } } });
+    await prisma.user.deleteMany({ where: { username: { startsWith: "test_message_" } } });
+    await prisma.message.deleteMany({ where: { body: { startsWith: "test_message_" } } });
+    await prisma.chatroom.deleteMany({ where: { name: { startsWith: "test_message_" } } });
 });
 
 describe("Message model tests", () => {
     test("Add a new message", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
-        const chatroom = await createChatroom({ name: "test_Chatroom" });
-        const message = await createMessage({ body: "test_Bjr Tata", senderId: profile.id, chatroomId: chatroom.id });
+        const user = await createUser({ username: "test_message_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_message_Seph", bio: "hey", userId: user.id, photoUrl: null });
+        const chatroom = await createChatroom({ name: "test_message_Chatroom" });
+        const message = await createMessage({ body: "test_message_Bjr tata", senderId: profile.id, chatroomId: chatroom.id });
 
         expect(message).toStrictEqual({
             id: message.id,
             createdAt: message.createdAt,
-            body: "test_Bjr Tata",
+            body: "test_message_Bjr tata",
             read: false,
             senderId: profile.id,
             chatroomId: chatroom.id
@@ -29,16 +29,16 @@ describe("Message model tests", () => {
     });
 
     test("Get a specific message", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
-        const chatroom = await createChatroom({ name: "test_Chatroom" });
-        const message = await createMessage({ body: "test_Bjr Tata", senderId: profile.id, chatroomId: chatroom.id });
+        const user = await createUser({ username: "test_message_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_message_Seph", bio: "hey", userId: user.id, photoUrl: null });
+        const chatroom = await createChatroom({ name: "test_message_Chatroom" });
+        const message = await createMessage({ body: "test_message_Bjr tata", senderId: profile.id, chatroomId: chatroom.id });
         const retrievedMessage = await getMessage(message.id)
 
         expect(retrievedMessage).toStrictEqual({
             id: message.id,
             createdAt: message.createdAt,
-            body: "test_Bjr Tata",
+            body: "test_message_Bjr tata",
             read: false,
             senderId: profile.id,
             chatroomId: chatroom.id
@@ -46,25 +46,33 @@ describe("Message model tests", () => {
     });
 
     test("Get messages", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
-        const chatroom = await createChatroom({ name: "test_Chatroom" });
-        const message1 = await createMessage({ body: "test_Bjr Tata", senderId: profile.id, chatroomId: chatroom.id });
-        const message2 = await createMessage({ body: "test_Okay", senderId: profile.id, chatroomId: chatroom.id });
+        const user = await createUser({ username: "test_message_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_message_Seph", bio: "hey", userId: user.id, photoUrl: null  });
+        const chatroom = await createChatroom({ name: "test_message_Chatroom" });
+        const message1 = await createMessage({ body: "test_message_Bjr tata", senderId: profile.id, chatroomId: chatroom.id });
+        const message2 = await createMessage({ body: "test_message_Okay", senderId: profile.id, chatroomId: chatroom.id });
         const messages = await getMessages();
 
+        expect(user).toEqual(
+            {
+                id: user.id,
+                username: "test_message_Seph",
+                password: user.password,
+                createdAt: user.createdAt
+            }
+        )
         expect(messages).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({
                     createdAt: message1.createdAt,
-                    body: "test_Bjr Tata",
+                    body: "test_message_Bjr tata",
                     read: false,
                     senderId: profile.id,
                     chatroomId: chatroom.id
                 }),
                 expect.objectContaining({
                     createdAt: message2.createdAt,
-                    body: "test_Okay",
+                    body: "test_message_Okay",
                     read: false,
                     senderId: profile.id,
                     chatroomId: chatroom.id
@@ -74,19 +82,19 @@ describe("Message model tests", () => {
     });
 
     test("Get messages from specific chatroom", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
-        const chatroom = await createChatroom({ name: "test_Chatroom" });
-        const chatroom2 = await createChatroom({ name: "test_Chatroom2" });
-        await createMessage({ body: "test_Bjr Tata", senderId: profile.id, chatroomId: chatroom2.id });
-        const message2 = await createMessage({ body: "test_Okay", senderId: profile.id, chatroomId: chatroom.id });
+        const user = await createUser({ username: "test_message_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_message_Seph", bio: "hey", userId: user.id, photoUrl: null  });
+        const chatroom = await createChatroom({ name: "test_message_Chatroom" });
+        const chatroom2 = await createChatroom({ name: "test_message_Chatroom2" });
+        await createMessage({ body: "test_message_Bjr tata", senderId: profile.id, chatroomId: chatroom2.id });
+        const message2 = await createMessage({ body: "test_message_Okay", senderId: profile.id, chatroomId: chatroom.id });
         const messages = await getMessagesFromChatroom(chatroom.id);
 
         expect(messages).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({
                     createdAt: message2.createdAt,
-                    body: "test_Okay",
+                    body: "test_message_Okay",
                     read: false,
                     senderId: profile.id,
                     chatroomId: chatroom.id
@@ -96,16 +104,16 @@ describe("Message model tests", () => {
     });
 
     test("Update a message", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
-        const chatroom = await createChatroom({ name: "test_Chatroom" });
-        const message = await createMessage({ body: "test_Bjr Tata", senderId: profile.id, chatroomId: chatroom.id });
+        const user = await createUser({ username: "test_message_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_message_Seph", bio: "hey", userId: user.id, photoUrl: null  });
+        const chatroom = await createChatroom({ name: "test_message_Chatroom" });
+        const message = await createMessage({ body: "test_message_Bjr tata", senderId: profile.id, chatroomId: chatroom.id });
         const updatedMessage = await updateMessage(message.id, { read: true });
 
         expect(updatedMessage).toStrictEqual({
             id: message.id,
             createdAt: message.createdAt,
-            body: "test_Bjr Tata",
+            body: "test_message_Bjr tata",
             read: true,
             senderId: profile.id,
             chatroomId: chatroom.id
@@ -113,17 +121,17 @@ describe("Message model tests", () => {
     });
 
     test("Delete a message", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
-        const chatroom = await createChatroom({ name: "test_Chatroom" });
-        const message = await createMessage({ body: "test_Bjr Tata", senderId: profile.id, chatroomId: chatroom.id });
+        const user = await createUser({ username: "test_message_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_message_Seph", bio: "hey", userId: user.id, photoUrl: null  });
+        const chatroom = await createChatroom({ name: "test_message_Chatroom" });
+        const message = await createMessage({ body: "test_message_Bjr tata", senderId: profile.id, chatroomId: chatroom.id });
         const deletedMessage = await deleteMessage(message.id);
         const retrievedMessage = await getMessage(message.id);
 
         expect(deletedMessage).toStrictEqual({
             id: message.id,
             createdAt: message.createdAt,
-            body: "test_Bjr Tata",
+            body: "test_message_Bjr tata",
             read: false,
             senderId: profile.id,
             chatroomId: chatroom.id

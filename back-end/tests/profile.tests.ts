@@ -2,84 +2,100 @@ import prisma from "../src/client";
 import { createProfile, getProfile, getProfiles, updateProfile, deleteProfile } from "../src/models/profile";
 import { createUser, getUser } from "../src/models/user";
 
-afterEach(() => {
-    prisma.user.deleteMany({ where: { username: { startsWith: "test_" } } });
-    prisma.profile.deleteMany({ where: { name: { startsWith: "test_" } } });
+afterEach(async () => {
+    await prisma.user.deleteMany({ where: { username: { startsWith: "test_profile_" } } });
+    await prisma.profile.deleteMany({ where: { name: { startsWith: "test_profile_" } } });
 });
 
 describe("Profile model tests", () => {
     test("Create a new profile linked to an existing user", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
+        const user = await createUser({ username: "test_profile_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_profile_Seph", bio: "hey", userId: user.id, photoUrl: null  });
 
+        expect(user).toStrictEqual({
+            id: user.id,
+            username: "test_profile_Seph",
+            password: user.password,
+            createdAt: user.createdAt
+        })
         expect(profile).toStrictEqual({
             id: profile.id,
-            name: "test_Seph",
+            name: "test_profile_Seph",
             bio: "hey",
-            userId: user.id
+            userId: user.id,
+            photoUrl: null
         });
     });
 
     test("Get a specific profile", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
+        const user = await createUser({ username: "test_profile_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_profile_Seph", bio: "hey", userId: user.id, photoUrl: null  });
         const retrievedProfile = await getProfile(profile.id);
 
+        expect(user.id).toBeDefined();
         expect(retrievedProfile).toStrictEqual({
             id: profile.id,
-            name: "test_Seph",
+            name: "test_profile_Seph",
             bio: "hey",
-            userId: user.id
+            userId: user.id,
+            photoUrl: null
         })
     });
 
     test("Get profiles", async () => {
-        const user1 = await createUser({ username: "test_Seph", password: "test" });
-        const user2 = await createUser({ username: "test_Toto", password: "test1" });
-        await createProfile({ name: "test_Seph", bio: "hey", userId: user1.id });
-        await createProfile({ name: "test_Toto", bio: "hi", userId: user2.id });
+        const user1 = await createUser({ username: "test_profile_Seph", password: "test" });
+        const user2 = await createUser({ username: "test_profile_Toto", password: "test1" });
+        await createProfile({ name: "test_profile_Seph", bio: "hey", userId: user1.id, photoUrl: null  });
+        await createProfile({ name: "test_profile_Toto", bio: "hi", userId: user2.id, photoUrl: null  });
         const profiles = await getProfiles();
 
+        expect(user1.id).toBeDefined();
+        expect(user2.id).toBeDefined();
         expect(profiles).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({
-                    name: "test_Seph",
+                    name: "test_profile_Seph",
                     bio: "hey",
-                    userId: user1.id
+                    userId: user1.id,
+                    photoUrl: null
                 }),
                 expect.objectContaining({
-                    name: "test_Toto",
+                    name: "test_profile_Toto",
                     bio: "hi",
-                    userId: user2.id
+                    userId: user2.id,
+                    photoUrl: null
                 }),
             ])
         );
     });
 
     test("Update a profile", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
+        const user = await createUser({ username: "test_profile_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_profile_Seph", bio: "hey", userId: user.id, photoUrl: null  });
         const updatedProfile = await updateProfile(profile.id, { name: "test_Tata", bio: "bonjour"});
 
+        
         expect(updatedProfile).toStrictEqual({
             id: profile.id,
             name: "test_Tata",
             bio: "bonjour",
-            userId: user.id
+            userId: user.id,
+            photoUrl: null
         });
     });
 
     test("Delete a profile", async () => {
-        const user = await createUser({ username: "test_Seph", password: "test" });
-        const profile = await createProfile({ name: "test_Seph", bio: "hey", userId: user.id });
+        const user = await createUser({ username: "test_profile_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_profile_Seph", bio: "hey", userId: user.id, photoUrl: null  });
         const deletedProfile = await deleteProfile(profile.id);
         const retrievedProfile = await getUser(profile.id);
 
         expect(deletedProfile).toStrictEqual({
             id: profile.id,
-            name: "test_Seph",
+            name: "test_profile_Seph",
             bio: "hey",
-            userId: user.id
+            userId: user.id,
+            photoUrl: null
         });
 
         expect(retrievedProfile).toBe(null);

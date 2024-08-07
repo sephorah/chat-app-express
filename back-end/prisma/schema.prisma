@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   id  String   @id @unique
-  username  String   @db.VarChar(50)
+  username  String   @db.VarChar(50) @unique
   password  String
   createdAt DateTime  @default(now())
   profile Profile?
@@ -24,12 +24,13 @@ model User {
 model Profile {
   id  String   @id @unique
   name String @db.VarChar(50)
+  photoUrl String?
   bio String  @db.VarChar(200)
   chatrooms Chatroom[]
   messages Message[]
 
   userId String @unique
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Chatroom {
@@ -47,7 +48,7 @@ model Message {
   read Boolean @default(false)
 
   senderId String
-  profile Profile @relation(fields: [senderId], references: [id])
+  profile Profile @relation(fields: [senderId], references: [id], onDelete: Cascade)
   chatroomId String
-  chatroom Chatroom @relation(fields: [chatroomId], references: [id])
+  chatroom Chatroom @relation(fields: [chatroomId], references: [id], onDelete: Cascade)
 }
