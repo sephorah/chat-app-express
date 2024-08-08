@@ -20,6 +20,7 @@ import { loginSchema } from "../schema/user"
 import api from "api"
 import { AxiosError } from "axios"
 import { useState } from "react"
+import { setAccessToken } from "./(auth)/handleAuth"
 
 const Home = () => {
     const router = useRouter();
@@ -29,10 +30,9 @@ const Home = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-        console.log(values)
         await api.post('/login', values)
             .then((response) => {
-                console.log(response)
+                setAccessToken(response.data.accessToken);
                 router.push("/chats");
             })
             .catch((error: AxiosError) => {
@@ -40,7 +40,7 @@ const Home = () => {
                 setErrorMessage(error.response.data);
             })
     }
-    console.log("err msg", errorMessage)
+
     return (
         <>
             <div className="flex flex-col h-screen items-center

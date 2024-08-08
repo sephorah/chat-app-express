@@ -1,12 +1,22 @@
-import ListChats from "@/components/chats/list-chats";
+"use client"
+// import ListChats from "@/components/chats/list-chats";
+import { Button } from "@components/ui/button";
+import { removeAccessToken } from "app/(auth)/handleAuth";
+import { useRouter } from "next/navigation";
 
 const Chats = () => {
+  const router = useRouter();
+
   return (
     <>
       <div className="flex flex-col h-screen items-center
       justify-center space-y-5 drop-shadow-sm bg-gradient">
         <h1>Chats</h1>
         {/* <ListChats/> */}
+        <Button onClick={() => {
+          removeAccessToken();
+          router.push("/");
+        }}>Log out</Button>
       </div>
     </>
   );

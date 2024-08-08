@@ -4,11 +4,11 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card"
+} from "../../../components/ui/card"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { Button } from "../../components/ui/button"
+import { Button } from "../../../components/ui/button"
 import {
   Form,
   FormControl,
@@ -16,15 +16,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../components/ui/form"
-import { Input } from "../../components/ui/input"
+} from "../../../components/ui/form"
+import { Input } from "../../../components/ui/input"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Separator } from "../../components/ui/separator"
-import { registerSchema } from "../../schema/user"
+import { Separator } from "../../../components/ui/separator"
+import { registerSchema } from "../../../schema/user"
 import api from "api";
 import { useState } from "react"
 import { AxiosError } from "axios"
+import { setAccessToken } from "app/(auth)/handleAuth"
 
 const SignUpPage = () => {
   const router = useRouter();
@@ -36,12 +37,11 @@ const SignUpPage = () => {
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     await api.post('/signup', values)
       .then((response) => {
-        console.log(response);
+        setAccessToken(response.data.accessToken);
         router.push("/chats");
       })
       .catch((error: AxiosError) => {
-          console.log(error);
-          setUsernameErrorMessage(error.response.data.error);
+        setUsernameErrorMessage(error.response.data.error);
       })
   }
 
@@ -71,7 +71,7 @@ const SignUpPage = () => {
                     )} />
                   {usernameErrorMessage && <FormMessage>{usernameErrorMessage}</FormMessage>}
                   {form.formState.errors.username &&
-                  <FormMessage>{form.formState.errors.username.message}</FormMessage>}
+                    <FormMessage>{form.formState.errors.username.message}</FormMessage>}
                   <FormField
                     control={form.control}
                     name="password"
@@ -97,7 +97,7 @@ const SignUpPage = () => {
                       </FormItem>
                     )} />
                   {form.formState.errors.confirmPassword &&
-                  <FormMessage>{form.formState.errors.confirmPassword.message}</FormMessage>}
+                    <FormMessage>{form.formState.errors.confirmPassword.message}</FormMessage>}
                 </div>
                 <Button type="submit" className="bg-primaryBlue rounded-full
                         self-center w-full">Sign up</Button>
