@@ -74,7 +74,7 @@ const Home = () => {
                                         )} />
                                     {errorMessage && <FormMessage>{errorMessage}</FormMessage>}
                                 </div>
-                                <Button type="submit" className="bg-primaryBlue rounded-full
+                                <Button type="submit" className="rounded-full
                         self-center w-full">Log in</Button>
                                 <Separator />
                                 <Link href="/signup" className="text-primaryBlue text-center font-semibold hover:underline">Create an account</Link>

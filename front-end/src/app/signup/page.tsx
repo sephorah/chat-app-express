@@ -40,7 +40,7 @@ const SignUpPage = () => {
         .catch((error) => {
             setUsernameErrorMessage(error.response.data);
         })
-}
+  }
 
   return (
     <>
@@ -96,7 +96,7 @@ const SignUpPage = () => {
                   {form.formState.errors.confirmPassword &&
                     <FormMessage>{form.formState.errors.confirmPassword.message}</FormMessage>}
                 </div>
-                <Button type="submit" className="bg-primaryBlue rounded-full
+                <Button type="submit" className="rounded-full
                         self-center w-full">Sign up</Button>
                 <Separator />
                 <Link href="/" className="text-primaryBlue text-center font-semibold hover:underline">Already have an account?</Link>
