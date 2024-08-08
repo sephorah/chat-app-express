@@ -36,10 +36,11 @@ const SignUpPage = () => {
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     await api.post('/signup', values)
       .then((response) => {
-        console.log(response)
+        console.log(response);
         router.push("/chats");
       })
       .catch((error: AxiosError) => {
+          console.log(error);
           setUsernameErrorMessage(error.response.data.error);
       })
   }
