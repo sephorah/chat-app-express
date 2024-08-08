@@ -4,11 +4,11 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card"
+} from "../../components/ui/card"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { Button } from "../../../components/ui/button"
+import { Button } from "@components/ui/button"
 import {
   Form,
   FormControl,
@@ -16,16 +16,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../components/ui/form"
-import { Input } from "../../../components/ui/input"
+} from "@components/ui/form"
+import { Input } from "@components/ui/input"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Separator } from "../../../components/ui/separator"
-import { registerSchema } from "../../../schema/user"
-import api from "api";
+import { Separator } from "@components/ui/separator"
+import { registerSchema } from "schema/user"
 import { useState } from "react"
-import { AxiosError } from "axios"
-import { setAccessToken } from "app/(auth)/handleAuth"
+import axios from "axios"
 
 const SignUpPage = () => {
   const router = useRouter();
@@ -34,16 +32,15 @@ const SignUpPage = () => {
   });
   const [usernameErrorMessage, setUsernameErrorMessage] = useState<string | null>(null);
 
-  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    await api.post('/signup', values)
-      .then((response) => {
-        setAccessToken(response.data.accessToken);
-        router.push("/chats");
-      })
-      .catch((error: AxiosError) => {
-        setUsernameErrorMessage(error.response.data.error);
-      })
-  }
+  const onSubmit = (values: z.infer<typeof registerSchema>) => {
+    axios.post("/api/auth/signup", values)
+        .then(() => {
+            router.push("/chats");
+        })
+        .catch((error) => {
+            setUsernameErrorMessage(error.response.data);
+        })
+}
 
   return (
     <>

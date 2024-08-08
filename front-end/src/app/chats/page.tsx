@@ -1,7 +1,7 @@
 "use client"
 // import ListChats from "@/components/chats/list-chats";
 import { Button } from "@components/ui/button";
-import { removeAccessToken } from "app/(auth)/handleAuth";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const Chats = () => {
@@ -14,7 +14,7 @@ const Chats = () => {
         <h1>Chats</h1>
         {/* <ListChats/> */}
         <Button onClick={() => {
-          removeAccessToken();
+          axios.delete("/api/auth");
           router.push("/");
         }}>Log out</Button>
       </div>

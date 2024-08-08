@@ -17,10 +17,8 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Separator } from "../components/ui/separator"
 import { loginSchema } from "../schema/user"
-import api from "api"
-import { AxiosError } from "axios"
+import axios, { AxiosError } from "axios"
 import { useState } from "react"
-import { setAccessToken } from "./(auth)/handleAuth"
 
 const Home = () => {
     const router = useRouter();
@@ -29,14 +27,12 @@ const Home = () => {
     });
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-        await api.post('/login', values)
-            .then((response) => {
-                setAccessToken(response.data.accessToken);
+    const onSubmit = (values: z.infer<typeof loginSchema>) => {
+        axios.post("/api/auth/login", values)
+            .then(() => {
                 router.push("/chats");
             })
-            .catch((error: AxiosError) => {
-                console.log(error.response.data)
+            .catch((error) => {
                 setErrorMessage(error.response.data);
             })
     }
