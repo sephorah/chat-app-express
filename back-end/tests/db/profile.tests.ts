@@ -45,8 +45,8 @@ describe("Profile model tests", () => {
     test("Get profiles", async () => {
         const user1 = await createUser({ username: "test_profile_Seph", password: "test" });
         const user2 = await createUser({ username: "test_profile_Toto", password: "test1" });
-        await createProfile({ name: "test_profile_Seph", bio: "hey", userId: user1.id, photoUrl: null  });
-        await createProfile({ name: "test_profile_Toto", bio: "hi", userId: user2.id, photoUrl: null  });
+        await createProfile({ name: "test_profile_Seph", bio: "hey", userId: user1.id, photoUrl: null });
+        await createProfile({ name: "test_profile_Toto", bio: "hi", userId: user2.id, photoUrl: null });
         const profiles = await getProfiles();
 
         expect(user1.id).toBeDefined();

@@ -14,7 +14,7 @@ const registerSchema = zod.object({
 })
 
 const loginSchema = zod.object({
-    username: zod.string().min(2).max(40),
+    username: zod.string().min(2).max(30),
     password: zod.string().min(8).max(12),
 })
 
