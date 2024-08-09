@@ -12,10 +12,10 @@ export default function ChatsLayout({
     return (
         <div className={inter.className}>
             <div className="flex flex-row h-screen w-screen">
-                <div className="bg-red-200 w-1/3">
+                <div className="bg-red-200 w-1/4">
                     <NavBar/>
                 </div>
-                <div className="w-2/3">
+                <div className="w-3/4">
                     {children}
                 </div>
             </div>

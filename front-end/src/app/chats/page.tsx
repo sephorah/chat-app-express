@@ -1,5 +1,6 @@
 "use client";
 import { AvatarFallback, AvatarImage } from "@components/ui/avatar";
+import { Button } from "@components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,8 +9,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form"
+import { Input } from "@components/ui/input";
+import { Textarea } from "@components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Avatar } from "@radix-ui/react-avatar";
+import { SendHorizonal, SendHorizonalIcon, SendIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { messageSchema } from "schema/message";
+import { z } from "zod";
 
 const msgs = [
   {
@@ -131,48 +147,50 @@ const msgs = [
 ]
 
 const Chats = () => {
-  const router = useRouter();
-  // <div className="flex flex-col h-screen items-center
-  // justify-center space-y-5 drop-shadow-sm bg-gradient">
-  //   <h1>Chats</h1>
-  //   {/* <ListChats/> */}
+  const form = useForm<z.infer<typeof messageSchema>>({
+    resolver: zodResolver(messageSchema)
+  });
 
-
-
-  //   <Button onClick={() => {
-  //     axios.delete("/api/auth");
-  //     router.push("/");
-  //   }}>Log out</Button>
-  // </div>
-
+  
+  const onSubmit = (values: z.infer<typeof messageSchema>) => {
+    console.log(values)
+  }
 
   return (
     <>
       <div className="flex flex-col h-screen">
-        <div className="bg-violet-400 h-[6%]">
-          Contatc
+        <div className="h-[7%] border shadow-md w-auto flex flex-row space-x-4">
+          <Avatar className="content-center ml-2 ">
+            <AvatarImage className={"rounded-full h-[60%] m-auto"} src="https://github.com/shadcn.png" alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <h3 className="content-center">Emily</h3>
         </div>
-        <div className="h-[88%] flex-col space-y-5 justify-end overflow-scroll no-scrollbar">
+        <div className="h-[83%] flex-col space-y-5 justify-end overflow-scroll no-scrollbar">
           {msgs.map((msg) => {
             const alignStyle = (msg.sender == "moi") ? "flex justify-end" : 
             "flex justify-start";
-            const colorStyle = (msg.sender == "moi") ? "bg-[#6190E8] text-white" :
+            const colorStyle = (msg.sender == "moi") ? "bg-primaryBlue text-white" :
             "bg-white text-primaryBlue";
 
             return (
-              <div className={alignStyle + " flex flex-row space-x-2 "}>
+              <div className={`${alignStyle} flex flex-row space-x-2`} key={msg.msg}>
                 {msg.sender == "pas moi" &&
-                  <Avatar>
-                    <AvatarImage className={"h-10 rounded-full ml-2" + alignStyle} src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <Avatar className="">
+                    <AvatarImage className={"w-10 min-w-10 h-10 rounded-full ml-2 "} src="https://github.com/shadcn.png" alt="@shadcn" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 }
-                <p key={msg.msg} className={colorStyle + " border drop-shadow-sm max-w-[80%] px-4 py-3 text-sm font-medium rounded bg-white "}>
-                  {msg.msg}
-                </p>
+                <div className={`${((msg.sender == "moi") ? "items-end" : "items-start")} flex flex-col space-y-1`}>
+                  <p className={`${colorStyle} border drop-shadow-sm max-w-[60%] px-4 py-3 text-sm font-medium rounded`}>
+                    {msg.msg}
+                  </p>
+                    <p className={"text-sm w-max"}>{msg.sender}</p>
+                    <p className={"text-sm w-max"}>18:07</p>
+                </div>
                 {msg.sender == "moi" && 
-                  <Avatar>
-                    <AvatarImage className={"h-10 rounded-full " + alignStyle} src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <Avatar className="">
+                    <AvatarImage className={"w-10 min-w-10 rounded-full h-10 ml-2"} src="https://github.com/shadcn.png" alt="@shadcn" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 }
@@ -180,8 +198,25 @@ const Chats = () => {
             )
           })}
         </div>
-        <div className="bg-blue-400 h-[6%]">
-          dtuzeyifb
+        <div className="h-[10%] rounded-lg p-1 overflow-hidden no-scrollbar flex-row">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="flex flex-row">
+                <FormField control={form.control} name="body"
+                  render={({ field }) => (
+                    <FormItem className="w-[95%]">
+                      <FormControl>
+                        <Textarea onSubmit={form.handleSubmit(onSubmit)} {...field} placeholder="Write something..."
+                          className="w-[100%] no-scrollbar focus-visible:ring-offset-0 focus-visible:ring-0" />
+                      </FormControl>
+                      </FormItem>
+                    )} />
+                  <Button type="submit" className="w-[5%] h-auto align-middle">
+                    <SendHorizonalIcon size={30}/>
+                  </Button>
+                </div>
+              </form>
+            </Form>
         </div>
       </div>
 
