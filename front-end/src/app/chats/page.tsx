@@ -31,6 +31,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { messageSchema } from "schema/message";
 import { z } from "zod";
+import socket from "socket";
 
 
 const Chats = () => {
@@ -44,6 +45,10 @@ const Chats = () => {
     console.log(values)
   }
   useEffect(() => {
+    console.log(socket)
+    if (socket.connected) {
+      console.log("Socket connected")
+    }
     axios.get("/api/layout")
       .then((response) => {
         console.log(response)

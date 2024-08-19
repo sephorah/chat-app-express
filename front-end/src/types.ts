@@ -65,6 +65,7 @@ export const listChatrooms: Chatroom[] = [
                 body: 'Hey, Jakob',
                 read: false,
                 senderId: listProfiles[0].id,
+                senderName: listProfiles[0].name
             },
             {
                 id: "2",
@@ -72,6 +73,7 @@ export const listChatrooms: Chatroom[] = [
                 body: 'Hey!',
                 read: false,
                 senderId: loggedInProfile.id,
+                senderName: loggedInProfile.name
             },
             {
                 id: "3",
@@ -79,6 +81,7 @@ export const listChatrooms: Chatroom[] = [
                 body: 'How are you all?',
                 read: false,
                 senderId: listProfiles[1].id,
+                senderName: listProfiles[1].name
             },
             {
                 id: "4",
@@ -86,6 +89,7 @@ export const listChatrooms: Chatroom[] = [
                 body: 'I am good, you?',
                 read: false,
                 senderId: loggedInProfile.id,
+                senderName: loggedInProfile.name
             },
         ]
     },
@@ -146,4 +150,5 @@ export interface Message {
     body: string,
     read: boolean,
     senderId: string,
+    senderName: string
 }

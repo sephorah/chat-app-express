@@ -46,7 +46,7 @@ const SignUpPage = () => {
     <>
       <div className="flex flex-col h-screen items-center
       justify-center space-y-5 drop-shadow-sm bg-gradient">
-        <Card className="w-1/6 h-auto">
+        <Card className="h-auto">
           <CardHeader>
             <CardTitle>Sign up</CardTitle>
           </CardHeader>

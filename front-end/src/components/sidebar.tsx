@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MoreHorizontal, SquarePen, Users2Icon } from "lucide-react";
+import { MoreHorizontal, SquarePen } from "lucide-react";
 import { cn } from "@lib/utils";
 import { buttonVariants } from "@components/ui/button";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@components/ui/tooltip";
 import { Message } from "types";
 import { Avatar, AvatarImage } from "./ui/avatar";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -73,21 +74,19 @@ export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
                       buttonVariants({ variant: link.variant, size: "icon" }),
                       "h-11 w-11 md:h-16 md:w-16",
                       link.variant === "grey" &&
-                        "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                      "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
                     )}
                   >
-                    {link.photoUrl ?
-                        <Avatar className="flex justify-center items-center">
-                          <AvatarImage
-                            src={link.photoUrl}
-                            alt={link.photoUrl}
-                            width={6}
-                            height={6}
-                            className="w-10 h-10 "
-                          />
-                        </Avatar> :
-                      <Users2Icon className="flex justify-center items-center"/>
-                    }
+                    <Avatar className="flex justify-center items-center">
+                      <AvatarImage
+                        src={link.photoUrl}
+                        alt={link.photoUrl}
+                        width={6}
+                        height={6}
+                        className="w-10 h-10 "
+                      />
+                      <AvatarFallback>{link.name[0]}</AvatarFallback>
+                    </Avatar>
                     <span className="sr-only">{link.name}</span>
                   </Link>
                 </TooltipTrigger>
@@ -106,11 +105,19 @@ export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
               className={cn(
                 buttonVariants({ variant: link.variant, size: "xl" }),
                 link.variant === "grey" &&
-                  "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white shrink",
+                "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white shrink",
                 "justify-start gap-4"
               )}
             >
-              <Users2Icon className="flex justify-center items-center" />
+              {link.photoUrl && <Avatar className="flex justify-center items-center">
+                <AvatarImage
+                  src={link.photoUrl}
+                  alt={link.photoUrl}
+                  width={6}
+                  height={6}
+                  className="w-10 h-10 "
+                />
+              </Avatar>}
               <div className="flex flex-col max-w-full">
                 <span>{link.name}</span>
                 {link.messages.length > 0 && (

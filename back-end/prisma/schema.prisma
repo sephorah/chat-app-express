@@ -39,6 +39,7 @@ model Chatroom {
   createdAt DateTime  @default(now())
   members Profile[]
   messages Message[]
+  photoUrl String?
 }
 
 model Message {
