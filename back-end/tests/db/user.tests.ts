@@ -1,6 +1,10 @@
 import prisma from "../../src/client";
 import { createUser, getUser, getUsers, updateUser, deleteUser, getUserByUsername } from "../../src/models/user";
 
+beforeAll(async () => {
+    await prisma.user.deleteMany({ where: { username: { startsWith: "test_user_" } } });
+});
+
 afterEach(async () => {
     await prisma.user.deleteMany({ where: { username: { startsWith: "test_user_" } } });
 });

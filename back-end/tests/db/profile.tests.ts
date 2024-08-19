@@ -2,6 +2,11 @@ import prisma from "../../src/client";
 import { createProfile, getProfile, getProfiles, updateProfile, deleteProfile } from "../../src/models/profile";
 import { createUser, getUser } from "../../src/models/user";
 
+beforeAll(async () => {
+    await prisma.user.deleteMany({ where: { username: { startsWith: "test_profile_" } } });
+    await prisma.profile.deleteMany({ where: { name: { startsWith: "test_profile_" } } }); 
+})
+
 afterEach(async () => {
     await prisma.user.deleteMany({ where: { username: { startsWith: "test_profile_" } } });
     await prisma.profile.deleteMany({ where: { name: { startsWith: "test_profile_" } } });
