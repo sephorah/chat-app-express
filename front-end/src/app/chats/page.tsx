@@ -1,4 +1,5 @@
 "use client";
+import { ChatLayout } from "@components/chats/chat-layout";
 import { AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Button } from "@components/ui/button";
 import {
@@ -21,152 +22,49 @@ import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Avatar } from "@radix-ui/react-avatar";
+import axios from "axios";
+import { useAuth } from "contexts/user-context";
 import { SendHorizonal, SendHorizonalIcon, SendIcon } from "lucide-react";
+import { cookies } from "next/headers";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { messageSchema } from "schema/message";
 import { z } from "zod";
 
-const msgs = [
-  {
-    sender: "moi",
-    msg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-  },
-  {
-    sender: "pas moi",
-    msg: "Suspendisse ornare mauris non lobortis mattis."
-  },
-  {
-    sender: "moi",
-    msg: "Donec vel erat ut quam accumsan suscipit. Maecenas eget ligula cursus"
-  },
-  {
-    sender: "pas moi",
-    msg: " vulputate tellus sit amet, ultrices neque."
-  },
-  {
-    sender: "moi",
-    msg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-  },
-  {
-    sender: "pas moi",
-    msg: "Suspendisse ornare mauris non lobortis mattis."
-  },
-  {
-    sender: "moi",
-    msg: "Donec vel erat ut quam accumsan suscipit. Maecenas eget ligula cursus"
-  },
-  {
-    sender: "pas moi",
-    msg: " vulputate tellus sit amet, ultrices neque."
-  },
-  {
-    sender: "moi",
-    msg: "Nam posuere ante nibh, in commodo quam scelerisque eget. "
-  },
-  {
-    sender: "moi",
-    msg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at elit vel magna ultrices aliquam. Mauris eu fermentum mauris. Ut facilisis, sem sagittis egestas lobortis, neque elit luctus libero, at congue felis tellus ut risus. Nullam luctus non erat vitae malesuada. Phasellus ultrices ex et purus pharetra, a luctus metus hendrerit. Nunc non nisi massa. Curabitur at sollicitudin tortor. Aliquam id nisl id mauris porta fermentum. Cras mollis lacus sed sapien consectetur condimentum. Curabitur finibus magna quis rutrum fermentum. Vestibulum semper ultrices ullamcorper. Aliquam id ipsum viverra, suscipit leo vitae, sagittis velit. Aenean at convallis libero."
-  },
-  {
-    sender: "pas moi",
-    msg: " vulputate tellus sit amet, ultrices neque."
-  },
-  {
-    sender: "moi",
-    msg: "Nam posuere ante nibh, in commodo quam scelerisque eget. "
-  },
-  {
-    sender: "pas moi",
-    msg: "Nunc non nisi massa. Curabitur at sollicitudin tortor. Aliquam id nisl id mauris porta fermentum. Cras mollis lacus sed sapien consectetur condimentum. Curabitur finibus magna quis rutrum fermentum. Vestibulum semper ultrices ullamcorper. Aliquam id ipsum viverra, suscipit leo vitae, sagittis velit. Aenean at convallis libero."
-  },
-  {
-    sender: "moi",
-    msg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-  },
-  {
-    sender: "pas moi",
-    msg: "Suspendisse ornare mauris non lobortis mattis."
-  },
-  {
-    sender: "moi",
-    msg: "Donec vel erat ut quam accumsan suscipit. Maecenas eget ligula cursus"
-  },
-  {
-    sender: "pas moi",
-    msg: " vulputate tellus sit amet, ultrices nequ2e."
-  },
-  {
-    sender: "moi",
-    msg: "Nam posuere ante nibh, in commodo quam scelerisque eget. "
-  },
-  {
-    sender: "pas moi",
-    msg: "Nunc non nisi massa. Curabitur at sollicitudin tortor. Aliquam id nisl id mauris porta fermentum. Cras mollis lacus sed sapien consectetur condimentum. Curabitur finibus magna quis rutrum fermentum. Vestibulum semper ultrices ullamcorper. Aliquam id ipsum viverra, suscipit leo vitae, sagittis velit. Aenean at convallis libero."
-  },
-  {
-    sender: "moi",
-    msg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-  },
-  {
-    sender: "pas moi",
-    msg: "Suspendisse ornare mauris non lobortis mattis."
-  },
-  {
-    sender: "moi",
-    msg: "Donec vel erat ut quam accumsan suscipit. Maecenas eget ligula cursus"
-  },
-  {
-    sender: "pas moi",
-    msg: " vulputate tellus sit amet, ultrices nequ2e."
-  },
-  {
-    sender: "moi",
-    msg: "Nam posuere ante nibh, in commodo quam scelerisque eget. "
-  },
-  {
-    sender: "pas moi",
-    msg: "Nunc non nisi massa. Curabitur at sollicitudin tortor. Aliquam id nisl id mauris porta fermentum. Cras mollis lacus sed sapien consectetur condimentum. Curabitur finibus magna quis rutrum fermentum. Vestibulum semper ultrices ullamcorper. Aliquam id ipsum viverra, suscipit leo vitae, sagittis velit. Aenean at convallis libero."
-  },
-  {
-    sender: "moi",
-    msg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-  },
-  {
-    sender: "pas moi",
-    msg: "Suspendisse ornare mauris non lobortis mattis."
-  },
-  {
-    sender: "moi",
-    msg: "Donec vel erat ut quam accumsan suscipit. Maecenas eget ligula cursus"
-  },
-  {
-    sender: "pas moi",
-    msg: " vulputate tellus sit amet, ultrices mamamm."
-  },
-]
 
 const Chats = () => {
+  const { currentUser, setCurrentUser} = useAuth();
+  const [defaultLayout, setDefaultLayout] = useState();
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema)
   });
 
-  
   const onSubmit = (values: z.infer<typeof messageSchema>) => {
     console.log(values)
   }
+  useEffect(() => {
+    axios.get("/api/layout")
+      .then((response) => {
+        console.log(response)
+        setDefaultLayout(response.data);
+      })
+  }, []);
 
   return (
     <>
-      <div className="flex flex-col h-screen">
-        <div className="h-[7%] border shadow-md w-auto flex flex-row space-x-4">
+      <div className="h-screen w-screen">
+        <ChatLayout defaultLayout={defaultLayout} navCollapsedSize={5} />
+      </div>
+      {/* <div className="flex flex-col h-screen"> */}
+      {/* <div className="h-[7%] border shadow-md w-auto flex flex-row space-x-4">
           <Avatar className="content-center ml-2 ">
             <AvatarImage className={"rounded-full h-[60%] m-auto"} src="https://github.com/shadcn.png" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <h3 className="content-center">Emily</h3>
-        </div>
-        <div className="h-[83%] flex-col space-y-5 justify-end overflow-scroll no-scrollbar">
+        </div> */}
+      {/* <div className="h-[83%] flex-col space-y-5 justify-end overflow-scroll no-scrollbar">
           {msgs.map((msg) => {
             const alignStyle = (msg.sender == "moi") ? "flex justify-end" : 
             "flex justify-start";
@@ -197,8 +95,9 @@ const Chats = () => {
               </div>
             )
           })}
-        </div>
-        <div className="h-[10%] rounded-lg p-1 overflow-hidden no-scrollbar flex-row">
+        </div> */}
+
+      {/* <div className="h-[10%] rounded-lg p-1 overflow-hidden no-scrollbar flex-row">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex flex-row">
@@ -206,7 +105,8 @@ const Chats = () => {
                   render={({ field }) => (
                     <FormItem className="w-[95%]">
                       <FormControl>
-                        <Textarea onSubmit={form.handleSubmit(onSubmit)} {...field} placeholder="Write something..."
+                        <Textarea {...field} placeholder="Write something..."
+                          autoComplete="off"
                           className="w-[100%] no-scrollbar focus-visible:ring-offset-0 focus-visible:ring-0" />
                       </FormControl>
                       </FormItem>
@@ -217,8 +117,8 @@ const Chats = () => {
                 </div>
               </form>
             </Form>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
 
     </>
   );
