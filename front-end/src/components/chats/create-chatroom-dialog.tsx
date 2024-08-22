@@ -16,14 +16,22 @@ import { chatroomSchema } from "schema/chatroom";
 import { SquarePen } from "lucide-react";
 import { Button, buttonVariants } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { MultiSelector, MultiSelectorContent, MultiSelectorInput, MultiSelectorItem, MultiSelectorList, MultiSelectorTrigger } from "@components/ui/multi-selector";
-import { useContext } from "react";
+import { MultiSelector, MultiSelectorContent, MultiSelectorInput, 
+  MultiSelectorItem, MultiSelectorList,
+  MultiSelectorTrigger } from "@components/ui/multi-selector";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "contexts/user-context";
+import { User } from "types";
+import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 
-const CreateChatroomDialog = () => {
-  const { currentUser, setCurrentUser } = useContext(AuthContext);
+interface CreateChatroomDialogProps {
+  users: Omit<User, "password"|"createdAt">[]
+};
+
+const CreateChatroomDialog = ({ users }: CreateChatroomDialogProps) => {
   const form = useForm<z.infer<typeof chatroomSchema>>({
-    resolver: zodResolver(chatroomSchema)
+    resolver: zodResolver(chatroomSchema),
+    defaultValues: chatroomSchema.parse({ name: "Chatroom", members: [ users[0].username ]})
   });
 
   const onSubmit = (values: z.infer<typeof chatroomSchema>) => {
@@ -42,7 +50,7 @@ const CreateChatroomDialog = () => {
         <DialogTitle>Create a new chatroom</DialogTitle>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-row  items-end">
+            <div className="flex flex-col gap-4">
               <FormField control={form.control} name="name"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
@@ -53,7 +61,7 @@ const CreateChatroomDialog = () => {
                     <FormMessage />
                   </FormItem>
                 )} />
-                <FormField
+              <FormField
                 control={form.control}
                 name="members"
                 render={({ field }) => (
@@ -68,20 +76,18 @@ const CreateChatroomDialog = () => {
                       </MultiSelectorTrigger>
                       <MultiSelectorContent>
                         <MultiSelectorList>
-                          {/* {users.map((user) => (
-                      <MultiSelectorItem key={user.name} value={user.name}>
-                        <div className="flex items-center space-x-2">
-                          <Image
-                            src={user}
-                            alt={user.name}
-                            width={32}
-                            height={32}
-                            className="w-8 h-8 rounded-full"
-                          />
-                          <span>{user.name}</span>
-                        </div>
-                      </MultiSelectorItem>
-                    ))} */}
+                          {users.map((user) => (
+                            <MultiSelectorItem key={user.id} value={user.username}>
+                              <div className="flex items-center space-x-2">
+                                <Avatar className="">
+                                  <AvatarImage className={"w-8 h-8 rounded-full"}
+                                    src={user?.profile?.photoUrl} alt={`${user.username} user picture`} />
+                                  <AvatarFallback>{`${user.username[0]}${user.username[1]}`}</AvatarFallback>
+                                </Avatar>
+                                <span>{user.username}</span>
+                              </div>
+                            </MultiSelectorItem>
+                          ))}
                         </MultiSelectorList>
                       </MultiSelectorContent>
                     </MultiSelector>

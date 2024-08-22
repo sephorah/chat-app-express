@@ -80,7 +80,7 @@ export function ChatList({
                         width={6}
                         height={6}
                         />
-                      <AvatarFallback>{senderProfile.name[0]}</AvatarFallback>
+                      <AvatarFallback>{`${senderProfile.name[0]}${senderProfile.name[1]}`}</AvatarFallback>
                     </Avatar>
                   )}
                   {/* (message.name !== currentChatroom.name)  to replace with
@@ -97,7 +97,7 @@ export function ChatList({
                         width={6}
                         height={6}
                         />
-                      <AvatarFallback>{senderProfile.name[0]}</AvatarFallback>
+                      <AvatarFallback>{`${senderProfile.name[0]}${senderProfile.name[1]}`}</AvatarFallback>
                     </Avatar>
                   )}
                 </div>

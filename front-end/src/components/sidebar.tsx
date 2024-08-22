@@ -41,7 +41,16 @@ export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
           </div>
 
           <div>
-            <CreateChatroomDialog/>
+            <CreateChatroomDialog users={[
+              {
+                id: "1",
+                username: "Tata",
+              },
+              {
+                id: "1",
+                username: "Toto",
+              }
+            ]}/>
           </div>
         </div>
       )}
@@ -68,7 +77,7 @@ export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
                         height={6}
                         className="w-10 h-10 "
                       />
-                      <AvatarFallback>{link.name[0]}</AvatarFallback>
+                      <AvatarFallback>{`${link.name[0]}${link.name[1]}`}</AvatarFallback>
                     </Avatar>
                     <span className="sr-only">{link.name}</span>
                   </Link>
