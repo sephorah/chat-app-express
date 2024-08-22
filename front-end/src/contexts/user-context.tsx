@@ -21,12 +21,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     useEffect(() => {
         if (!currentUser) {
-            const user = localStorage.getItem("currentUser");
+            const user = sessionStorage.getItem("currentUser");
             if (user) {
                 setCurrentUser(JSON.parse(user));
             }
         } else {
-            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+            sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
         }
     }, [currentUser]);
 

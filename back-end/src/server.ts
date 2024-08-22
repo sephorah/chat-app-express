@@ -18,10 +18,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use("/", authRouter);
 
-app.get("/", (req, res) => {
-  res.send("<h1>Hello world</h1>");
-});
-
 io.on("connection", (socket) => {
   console.log("A user connected!")
 })

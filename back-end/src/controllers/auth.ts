@@ -5,15 +5,15 @@ import { saltRounds, secretJwt } from "../config";
 import { createUser, getUserByUsername } from "../models/user";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
-import { createProfile } from "../models/profile";
+import { createProfile, getProfile, getProfileByUserId } from "../models/profile";
 
 const register = async (req: Request, res: Response) => {
     const { username, password } = req.body;
-    const user: Omit<User, "id"|"createdAt"> = {
+    const user: Omit<User, "id" | "createdAt"> = {
         username: username,
         password: hashSync(password, saltRounds)
     };
-    
+
     try {
         const createdUser = await createUser(user);
         const profile: Omit<Profile, "id"> = {
@@ -22,27 +22,33 @@ const register = async (req: Request, res: Response) => {
             userId: createdUser.id,
             photoUrl: null
         }
-        await createProfile(profile);
+        const createdProfile = await createProfile(profile);
+        const accessToken = jwt.sign({ username: user.username }, secretJwt);
+        const response = {
+            user: { 
+                profile: createdProfile,
+                ...createdUser,
+            },
+            accessToken: accessToken
+        }
+        res.status(StatusCodes.CREATED).send(response);
     } catch (error) {
         res.status(StatusCodes.CONFLICT).send({
             error: "Username already taken"
         })
         return;
     }
-    const accessToken = jwt.sign({ username: user.username }, secretJwt);
-    const response = {
-        accessToken: accessToken
-    }
-    res.status(StatusCodes.CREATED).send(response);
 }
 
 const login = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const retrievedUser = await getUserByUsername(username);
+    
     if (!retrievedUser) {
         res.status(StatusCodes.NOT_FOUND).send("User not found");
         return;
     }
+    const retrievedProfile = await getProfileByUserId(retrievedUser.id);
     const matchPassword = compareSync(password, retrievedUser.password);
     if (!matchPassword) {
         res.status(StatusCodes.FORBIDDEN).send("Wrong password");
@@ -50,6 +56,10 @@ const login = async (req: Request, res: Response) => {
     }
     const accessToken = jwt.sign({ username: username }, secretJwt);
     const response = {
+        user: {
+            profile: retrievedProfile,
+            ...retrievedUser,
+        },
         accessToken: accessToken
     }
     res.status(StatusCodes.OK).send(response);

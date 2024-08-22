@@ -23,11 +23,11 @@ import { Textarea } from "@components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Avatar } from "@radix-ui/react-avatar";
 import axios from "axios";
-import { useAuth } from "contexts/user-context";
+import { AuthContext, AuthProvider, useAuth } from "contexts/user-context";
 import { SendHorizonal, SendHorizonalIcon, SendIcon } from "lucide-react";
 import { cookies } from "next/headers";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { messageSchema } from "schema/message";
 import { z } from "zod";
@@ -35,7 +35,7 @@ import socket from "socket";
 
 
 const Chats = () => {
-  const { currentUser, setCurrentUser} = useAuth();
+  const { currentUser, setCurrentUser} = useContext(AuthContext);
   const [defaultLayout, setDefaultLayout] = useState();
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema)
@@ -44,6 +44,8 @@ const Chats = () => {
   const onSubmit = (values: z.infer<typeof messageSchema>) => {
     console.log(values)
   }
+  console.log(currentUser?.username)
+  console.log(currentUser?.profile?.name)
   useEffect(() => {
     console.log(socket)
     if (socket.connected) {

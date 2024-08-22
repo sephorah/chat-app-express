@@ -14,7 +14,7 @@ const POST = async (request: Request) => {
       httpOnly: true,
       path: "/",
     });
-    return new Response();
+    return new Response(JSON.stringify(response.data.user));
   } catch (error) {
     console.log(error.response.data)
     return new Response(JSON.stringify(error.response.data), {

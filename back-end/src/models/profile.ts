@@ -19,6 +19,15 @@ const getProfile = async (id: string): Promise<Profile> => {
     });
 }
 
+const getProfileByUserId = async (userId: string): Promise<Profile> => {
+    return await prisma.profile.findUnique({
+        where: {
+            userId: userId
+        },
+    });
+}
+
+
 const updateProfile = async (id: string, data: Partial<Profile>): Promise<Profile> => {
     return await prisma.profile.update({
         where: {
@@ -37,4 +46,4 @@ const deleteProfile = async (id: string): Promise<Profile> => {
 }
 
 
-export { createProfile, getProfile, getProfiles, updateProfile, deleteProfile };
+export { createProfile, getProfile, getProfiles, updateProfile, deleteProfile, getProfileByUserId };

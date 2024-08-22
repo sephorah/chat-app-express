@@ -22,24 +22,27 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Separator } from "@components/ui/separator"
 import { registerSchema } from "schema/user"
-import { useState } from "react"
-import axios from "axios"
+import { useContext, useState } from "react"
+import { AuthContext } from "contexts/user-context"
+import { signup } from "api-client";
+import { AxiosPromise } from "axios"
 
 const SignUpPage = () => {
+  const { currentUser, setCurrentUser } = useContext(AuthContext);
   const router = useRouter();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema)
   });
   const [usernameErrorMessage, setUsernameErrorMessage] = useState<string | null>(null);
 
-  const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    axios.post("/api/auth/signup", values)
-        .then(() => {
-            router.push("/chats");
-        })
-        .catch((error) => {
-            setUsernameErrorMessage(error.response.data);
-        })
+  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
+    try {
+      const response = await signup(values);
+      router.push("/chats");
+      setCurrentUser(response.data);
+    } catch (error) {
+      setUsernameErrorMessage(error.response.data);
+    }
   }
 
   return (

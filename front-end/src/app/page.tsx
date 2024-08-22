@@ -18,25 +18,28 @@ import Link from "next/link"
 import { Separator } from "../components/ui/separator"
 import { loginSchema } from "../schema/user"
 import axios, { AxiosError } from "axios"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { AuthContext } from "contexts/user-context"
+import { login } from "api-client"
 
 const Home = () => {
+    const { currentUser, setCurrentUser } = useContext(AuthContext);
     const router = useRouter();
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema)
     });
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const onSubmit = (values: z.infer<typeof loginSchema>) => {
-        axios.post("/api/auth/login", values)
-            .then(() => {
-                router.push("/chats");
-            })
-            .catch((error) => {
-                setErrorMessage(error.response.data);
-            })
+    const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+        try {
+            const response = await login(values);
+            setCurrentUser(response.data);
+            router.push("/chats");
+        } catch (error) {
+            setErrorMessage(error.response.data);
+        }
     }
-
+    
     return (
         <>
             <div className="flex flex-col h-screen items-center

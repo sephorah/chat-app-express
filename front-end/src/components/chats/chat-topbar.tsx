@@ -12,7 +12,6 @@ interface ChatTopbarProps {
 
 export const TopbarIcons = [{ icon: Info }];
 
-
 export default function ChatTopbar({ currentChatroom }: ChatTopbarProps) {
   return (
     <div className="w-full h-20 flex p-4 justify-between items-center border-b">

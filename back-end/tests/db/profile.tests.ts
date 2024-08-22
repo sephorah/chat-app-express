@@ -1,5 +1,5 @@
 import prisma from "../../src/client";
-import { createProfile, getProfile, getProfiles, updateProfile, deleteProfile } from "../../src/models/profile";
+import { createProfile, getProfile, getProfiles, updateProfile, deleteProfile, getProfileByUserId } from "../../src/models/profile";
 import { createUser, getUser } from "../../src/models/user";
 
 beforeAll(async () => {
@@ -38,6 +38,20 @@ describe("Profile model tests", () => {
         const retrievedProfile = await getProfile(profile.id);
 
         expect(user.id).toBeDefined();
+        expect(retrievedProfile).toStrictEqual({
+            id: profile.id,
+            name: "test_profile_Seph",
+            bio: "hey",
+            userId: user.id,
+            photoUrl: null
+        })
+    });
+
+    test("Get a specific user by username", async () => {
+        const user = await createUser({ username: "test_profile_Seph", password: "test" });
+        const profile = await createProfile({ name: "test_profile_Seph", bio: "hey", userId: user.id, photoUrl: null  });
+        const retrievedProfile = await getProfileByUserId(user.id);
+
         expect(retrievedProfile).toStrictEqual({
             id: profile.id,
             name: "test_profile_Seph",

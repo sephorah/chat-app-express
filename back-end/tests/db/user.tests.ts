@@ -17,7 +17,7 @@ describe("User model tests", () => {
             id: user.id,
             username: "test_user_Seph",
             password: user.password,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
         })
     });
 
@@ -41,7 +41,7 @@ describe("User model tests", () => {
             id: user.id,
             username: "test_user_Seph",
             password: user.password,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
         })
     });
 

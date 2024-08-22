@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { MoreHorizontal, SquarePen } from "lucide-react";
 import { cn } from "@lib/utils";
 import { buttonVariants } from "@components/ui/button";
 import {
@@ -13,6 +12,7 @@ import {
 import { Message } from "types";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
+import CreateChatroomDialog from "./chats/create-chatroom-dialog";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -27,6 +27,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
+
   return (
     <div
       data-collapsed={isCollapsed}
@@ -40,25 +41,7 @@ export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
           </div>
 
           <div>
-            <Link
-              href="#"
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "icon" }),
-                "h-9 w-9"
-              )}
-            >
-              <MoreHorizontal size={20} />
-            </Link>
-
-            <Link
-              href="#"
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "icon" }),
-                "h-9 w-9"
-              )}
-            >
-              <SquarePen size={20} />
-            </Link>
+            <CreateChatroomDialog/>
           </div>
         </div>
       )}
