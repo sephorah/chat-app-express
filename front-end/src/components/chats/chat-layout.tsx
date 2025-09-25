@@ -9,14 +9,14 @@ import {
 import { cn } from "@lib/utils";
 import { Sidebar } from "../sidebar";
 import { Chat } from "./chat";
-import { Chatroom, listChatrooms } from "types";
+import { Chatroom, listChatrooms, User } from "types";
+import { getUsers } from "api-client";
 
 interface ChatLayoutProps {
   defaultLayout: number[] | undefined;
   defaultCollapsed?: boolean;
   navCollapsedSize: number;
 }
-
 
 export function ChatLayout({
   defaultLayout = [320, 480],
@@ -27,9 +27,14 @@ export function ChatLayout({
   // const [selectedUser, setSelectedUser] = React.useState(userData[0]);
   const [currentChatroom, setCurrentChatroom] = React.useState<Chatroom>(listChatrooms[0]);
   const [chatrooms, setChatrooms] = React.useState<Chatroom[]>(listChatrooms);
+  const [users, setUsers] = useState<User[]>([])
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    getUsers()
+      .then((users) => {
+        setUsers(users);
+      })
     const checkScreenWidth = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -44,6 +49,7 @@ export function ChatLayout({
     return () => {
       window.removeEventListener("resize", checkScreenWidth);
     };
+
   }, []);
 
   return (

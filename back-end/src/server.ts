@@ -1,7 +1,8 @@
 import express from 'express';
 import { createServer } from 'node:http';
 import authRouter from "./routes/auth";
-import profileRouter from "./routes/profile"
+import profileRouter from "./routes/profile";
+import userRouter from "./routes/user";
 import cors from "cors";
 import bodyParser from 'body-parser';
 import { Server } from 'socket.io';
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use("/", authRouter);
 app.use("/", profileRouter);
+app.use("/", userRouter);
 
 io.on("connection", (socket) => {
   console.log("A user connected!")
