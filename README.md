@@ -1,6 +1,6 @@
 # Chat app
 
-A practice project to explore front-end and back-end development. Not maintained.
+A practice project to explore front-end and back-end development with Next.js and Express. Not maintained.
 
 ## Installation
 
